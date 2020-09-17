@@ -69,6 +69,48 @@ class Pawn(Figure):
         attack_list = []
 
         if self.has_moved:
+
+            if self.color == 'white':
+                potential_paths = [(self.row + 1, self.column)]
+                potential_attack_paths = [(self.row + 1, self.column - 1), (self.row + 1, self.column + 1)]
+
+            elif self.color == "black":
+                potential_paths = [(self.row - 1, self.column)]
+                potential_attack_paths = [(self.row - 1, self.column - 1), (self.row - 1, self.column + 1)]
+
+        else:
+            
+            if self.color == 'white':
+                potential_paths = [(self.row + 1, self.column), (self.row + 2, self.column)]
+                potential_attack_paths = [(self.row + 1, self.column - 1), (self.row + 1, self.column + 1)]
+
+            elif self.color == "black":
+                potential_paths = [(self.row - 1, self.column), (self.row - 2, self.column)]
+                potential_attack_paths = [(self.row - 1, self.column - 1), (self.row - 1, self.column + 1)]
+
+        for potential_path in potential_paths:
+            
+            if self.check_boundaries(potential_path, n_tiles) and not figure_map[potential_path[0]][potential_path[1]] == None:
+                break
+
+            elif self.check_boundaries(potential_path, n_tiles) and figure_map[potential_path[0]][potential_path[1]] == None:
+                paths_list.append(potential_path)
+
+        for potential_path in potential_attack_paths:
+
+            if self.check_boundaries(potential_path, n_tiles) and not figure_map[potential_path[0]][potential_path[1]] == None:
+
+                if not figure_map[potential_path[0]][potential_path[1]].color == self.color:
+                    attack_list.append(potential_path)
+
+        return paths_list, attack_list
+
+    def paths_(self, n_tiles, figure_map):
+
+        paths_list = []
+        attack_list = []
+
+        if self.has_moved:
             if self.color == 'white':
                 potential_paths = [(self.row + 1, self.column)]
                 potential_attack_paths = [(self.row + 1, self.column + 1),
@@ -102,7 +144,7 @@ class Pawn(Figure):
 
         return paths_list, attack_list
 
-    def paths_(self, n_tiles, figure_map):
+    def paths__(self, n_tiles, figure_map):
 
         ''' DEPRECATED '''
 

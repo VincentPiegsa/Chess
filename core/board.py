@@ -1,6 +1,7 @@
 import pygame
 
 from figures import Figure, Pawn, Rook, Knight, Bishop, Queen, King
+from arrow import Arrow
 from tools import render_text
 
 
@@ -57,6 +58,8 @@ class Board(object):
 
 		self.populate_tile_map()
 
+		self.recent_move = None
+
 	def render(self, surface):
 
 		pygame.draw.rect(surface, (255, 255, 255), self.rect)
@@ -89,6 +92,15 @@ class Board(object):
 
 				if self.figure_map[row][column]:
 					self.figure_map[row][column].render(surface, (self.x, self.y), (self.tile_width, self.tile_height))
+
+		if self.recent_move != None:
+
+			start = (self.x + self.recent_move[0][0] * self.tile_width, self.y + self.recent_move[0][1] * self.tile_height)
+			stop = (self.x + self.recent_move[1][0] * self.tile_width, self.y + self.recent_move[1][1] * self.tile_height)
+
+			arrow = Arrow(start, stop, 10, (220, 200, 0))
+			arrow.render(surface)
+
 
 	def populate_tile_map(self):
 
@@ -155,6 +167,7 @@ class Board(object):
 
 							if index in attack_paths:
 
+								self.recent_move = (self.selected_tile, tile)
 								current_player.points += self.figure_map[tile[0]][tile[1]].value
 
 								figure.move(tile[0], tile[1])
@@ -170,6 +183,7 @@ class Board(object):
 					else:
 
 						if tile in paths:
+							self.recent_move = (self.selected_tile, tile)
 							figure.move(tile[0], tile[1])
 
 							self.figure_map[self.selected_tile[0]][self.selected_tile[1]] = None

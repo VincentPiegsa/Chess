@@ -164,13 +164,18 @@ def game_singleplayer(player1, player2):
 		timer = render_text('%.2d:%.2d' % (delta_t.total_seconds() // 60, delta_t.total_seconds() % 60))
 		surface.blit(timer, ((config['WIDTH'] - timer.get_width()) // 2, 50))
 
-		surface.blit(player1.name_rendered, (25, 10))
-		surface.blit(player1.icon_rendered, (25, 50))
+		if current_player == player1:
+			surface.blit(player1.active_name_rendered, (25, 10))
+			surface.blit(player2.name_rendered, ((config['WIDTH'] - player2.name_rendered.get_width() - 25), 10))
+
+		elif current_player == player2:
+			surface.blit(player1.name_rendered, (25, 10))
+			surface.blit(player2.active_name_rendered, ((config['WIDTH'] - player2.name_rendered.get_width() - 25), 10))
 
 		player1_points = render_text(f'{player1.points}')
 		surface.blit(player1_points, ((25 + player1.icon_rendered.get_width() + 25), 50 + (player1.icon_rendered.get_height() - player1_points.get_height()) // 2))
 
-		surface.blit(player2.name_rendered, ((config['WIDTH'] - player2.name_rendered.get_width() - 25), 10))
+		surface.blit(player1.icon_rendered, (25, 50))
 		surface.blit(player2.icon_rendered, ((config['WIDTH'] - player2.icon_rendered.get_width() - 25), 50))
 
 		player2_points = render_text(f'{player2.points}')
@@ -239,7 +244,7 @@ def game_singleplayer(player1, player2):
 							elif return_option == 'quit':
 								return
 
-						if current_player == player1:
+						elif current_player == player1:
 							current_player = player2
 
 						elif current_player == player2:
@@ -467,6 +472,7 @@ def game_over(current_player):
 
 				if event.key == pygame.K_ESCAPE:
 					run = False
+					return 'quit'
 
 			if event.type == pygame.MOUSEBUTTONDOWN:
 
@@ -475,16 +481,16 @@ def game_over(current_player):
 
 					if restart_button.is_clicked(mouse_pos):
 						run = False
-						return_option = 'restart'
+						return 'restart'
 
 					if quit_button.is_clicked(mouse_pos):
 						run = False
-						return_option = 'quit'
+						return 'quit'
 
 		graphics(display, [restart_button, quit_button])
 		pygame.display.update()
 
-	return return_option 
+	return
 
 
 if __name__ == '__main__':

@@ -13,6 +13,7 @@ class Player(object):
 		self.move_finished = False
 
 		self.name_rendered = render_text(self.name)
+		self.active_name_rendered = render_text(self.name, color=(255, 0, 0))
 		self.icon_rendered = load_image(self.icon)
 
 	def __repr__(self):
@@ -22,6 +23,7 @@ class Player(object):
 	def update(self):
 
 		self.name_rendered = render_text(self.name)
+		self.active_name_rendered = render_text(self.name, color=(255, 0, 0))
 		self.icon_rendered = load_image(self.icon)
 
 	def get_team(self):
