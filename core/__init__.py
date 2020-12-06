@@ -3,10 +3,10 @@ import pygame
 import json
 import os
 
-from board import Board
-from ui_components import Button, RoundedButton, ImageButton, Entry
-from tools import render_text, load_image
-from player import Player
+from core.board import Board
+from core.ui_components import Button, RoundedButton, ImageButton, Entry
+from core.tools import render_text, load_image
+from core.player import Player
 
 os.environ['SDL_VIDEO_CENTERED'] = '1'
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = 'hide'
@@ -14,7 +14,7 @@ os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = 'hide'
 pygame.init()
 pygame.font.init()
 
-config = json.load(open('config.json', 'r'))
+config = json.load(open('core/config.json', 'r'))
 
 display = pygame.display.set_mode((config['WIDTH'], config['HEIGHT']))
 pygame.display.set_caption(config['TITLE'])
@@ -23,6 +23,7 @@ clock = pygame.time.Clock()
 
 icon = load_image('icon.png')
 pygame.display.set_icon(icon)
+
 
 def run():
 
@@ -186,7 +187,7 @@ def game_singleplayer(player1, player2):
 
 	global display, clock, config
 
-	board = Board(0, 200, 600, 600)
+	board = Board((config['WIDTH'] - 600) // 2, 200, 600, 600)
 
 	pause_button = ImageButton(270, 25, 'pause.png')
 	resume_button = ImageButton(305, 25, 'resume.png')
@@ -199,6 +200,7 @@ def game_singleplayer(player1, player2):
 	current_player = player1
 
 	run = True
+	pause = False
 
 	while run:
 
@@ -223,10 +225,10 @@ def game_singleplayer(player1, player2):
 					board.is_clicked(mouse_pos, current_player)
 
 					if pause_button.is_clicked(mouse_pos):
-						pass
+						pause = True
 
 					if resume_button.is_clicked(mouse_pos):
-						pass
+						pause = False
 
 					if current_player.move_finished:
 						current_player.move_finished = False

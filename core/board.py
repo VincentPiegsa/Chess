@@ -1,8 +1,8 @@
 import pygame
 
-from figures import Figure, Pawn, Rook, Knight, Bishop, Queen, King
-from arrow import Arrow
-from tools import render_text
+from core.figures import Figure, Pawn, Rook, Knight, Bishop, Queen, King
+from core.arrow import Arrow
+from core.tools import render_text
 
 
 class Tile(object):
@@ -47,18 +47,19 @@ class Board(object):
 
 		self.tile_map = []
 
-		self.figure_map = [[Rook(0, 0, 'white'), Knight(0, 1, 'white'), Bishop(0, 2, 'white'), Queen(0, 3, 'white'), King(0, 4, 'white'), Bishop(0, 5, 'white'), Knight(0, 6, 'white'), Rook(0, 7, 'white')],
-						   [Pawn(1, 0, 'white'), Pawn(1, 1, 'white')  , Pawn(1, 2, 'white')  , Pawn(1, 3, 'white') , Pawn(1, 4, 'white'), Pawn(1, 5, 'white')  , Pawn(1, 6, 'white')  , Pawn(1,7, 'white') ],
+		self.figure_map = [[Rook(0, 0, 'black'), Knight(0, 1, 'black'), Bishop(0, 2, 'black'), Queen(0, 3, 'black'), King(0, 4, 'black'), Bishop(0, 5, 'black'), Knight(0, 6, 'black'), Rook(0, 7, 'black')],
+						   [Pawn(1, 0, 'black'), Pawn(1, 1, 'black')  , Pawn(1, 2, 'black')  , Pawn(1, 3, 'black') , Pawn(1, 4, 'black'), Pawn(1, 5, 'black')  , Pawn(1, 6, 'black')  , Pawn(1,7, 'black') ],
 						   [None, None, None, None, None, None, None, None],
 						   [None, None, None, None, None, None, None, None],
 						   [None, None, None, None, None, None, None, None],
 						   [None, None, None, None, None, None, None, None],
-						   [Pawn(6, 0, 'black'), Pawn(6, 1, 'black')  , Pawn(6, 2, 'black')  , Pawn(6, 3, 'black') , Pawn(6, 4, 'black'), Pawn(6, 5, 'black')  , Pawn(6, 6, 'black')  , Pawn(6, 7, 'black') ],
-						   [Rook(7, 0, 'black'), Knight(7, 1, 'black'), Bishop(7, 2, 'black'), Queen(7, 3, 'black'), King(7, 4, 'black'), Bishop(7, 5, 'black'), Knight(7, 6, 'black'), Rook(7, 7, 'black')]]
+						   [Pawn(6, 0, 'white'), Pawn(6, 1, 'white')  , Pawn(6, 2, 'white')  , Pawn(6, 3, 'white') , Pawn(6, 4, 'white'), Pawn(6, 5, 'white')  , Pawn(6, 6, 'white')  , Pawn(6, 7, 'white') ],
+						   [Rook(7, 0, 'white'), Knight(7, 1, 'white'), Bishop(7, 2, 'white'), Queen(7, 3, 'white'), King(7, 4, 'white'), Bishop(7, 5, 'white'), Knight(7, 6, 'white'), Rook(7, 7, 'white')]]
 
 		self.populate_tile_map()
 
 		self.recent_move = None
+		self.move_type = ''
 
 	def render(self, surface):
 
@@ -95,10 +96,14 @@ class Board(object):
 
 		if self.recent_move != None:
 
-			start = (self.x + self.recent_move[0][0] * self.tile_width, self.y + self.recent_move[0][1] * self.tile_height)
-			stop = (self.x + self.recent_move[1][0] * self.tile_width, self.y + self.recent_move[1][1] * self.tile_height)
+			start = (self.x + self.recent_move[0][1] * self.tile_width + 0.5 * self.tile_width, self.y + self.recent_move[0][0] * self.tile_height + 0.5 * self.tile_height)
+			stop = (self.x + self.recent_move[1][1] * self.tile_width + 0.5 * self.tile_width, self.y + self.recent_move[1][0] * self.tile_height + 0.5 * self.tile_height)
+	
+			move = self.move_type[0] + self.convert_board_coordinates(self.recent_move[0]) + self.move_type[1] + self.convert_board_coordinates(self.recent_move[1])
+			move_rendered = render_text(move, fontsize=25)
+			surface.blit(move_rendered, (self.x + (self.width - move_rendered.get_width()) // 2, self.y - 75))
 
-			arrow = Arrow(start, stop, 10, (220, 200, 0))
+			arrow = Arrow(start, stop, 5, (220, 200, 0))
 			arrow.render(surface)
 
 
@@ -128,14 +133,16 @@ class Board(object):
 
 	def reset_figures(self):
 
-		self.figure_map = [[Rook(0, 0, 'white'), Knight(0, 1, 'white'), Bishop(0, 2, 'white'), Queen(0, 3, 'white'), King(0, 4, 'white'), Bishop(0, 5, 'white'), Knight(0, 6, 'white'), Rook(0, 7, 'white')],
-						   [Pawn(1, 0, 'white'), Pawn(1, 1, 'white')  , Pawn(1, 2, 'white')  , Pawn(1, 3, 'white') , Pawn(1, 4, 'white'), Pawn(1, 5, 'white')  , Pawn(1, 6, 'white')  , Pawn(1,7, 'white') ],
+		self.figure_map = [[Rook(0, 0, 'black'), Knight(0, 1, 'black'), Bishop(0, 2, 'black'), Queen(0, 3, 'black'), King(0, 4, 'black'), Bishop(0, 5, 'black'), Knight(0, 6, 'black'), Rook(0, 7, 'black')],
+						   [Pawn(1, 0, 'black'), Pawn(1, 1, 'black')  , Pawn(1, 2, 'black')  , Pawn(1, 3, 'black') , Pawn(1, 4, 'black'), Pawn(1, 5, 'black')  , Pawn(1, 6, 'black')  , Pawn(1,7, 'black') ],
 						   [None, None, None, None, None, None, None, None],
 						   [None, None, None, None, None, None, None, None],
 						   [None, None, None, None, None, None, None, None],
 						   [None, None, None, None, None, None, None, None],
-						   [Pawn(6, 0, 'black'), Pawn(6, 1, 'black')  , Pawn(6, 2, 'black')  , Pawn(6, 3, 'black') , Pawn(6, 4, 'black'), Pawn(6, 5, 'black')  , Pawn(6, 6, 'black')  , Pawn(6, 7, 'black') ],
-						   [Rook(7, 0, 'black'), Knight(7, 1, 'black'), Bishop(7, 2, 'black'), Queen(7, 3, 'black'), King(7, 4, 'black'), Bishop(7, 5, 'black'), Knight(7, 6, 'black'), Rook(7, 7, 'black')]]
+						   [Pawn(6, 0, 'white'), Pawn(6, 1, 'white')  , Pawn(6, 2, 'white')  , Pawn(6, 3, 'white') , Pawn(6, 4, 'white'), Pawn(6, 5, 'white')  , Pawn(6, 6, 'white')  , Pawn(6, 7, 'white') ],
+						   [Rook(7, 0, 'white'), Knight(7, 1, 'white'), Bishop(7, 2, 'white'), Queen(7, 3, 'white'), King(7, 4, 'white'), Bishop(7, 5, 'white'), Knight(7, 6, 'white'), Rook(7, 7, 'white')]]
+
+		self.recent_move = None
 
 	def is_clicked(self, mouse_pos, current_player):
 
@@ -168,6 +175,7 @@ class Board(object):
 							if index in attack_paths:
 
 								self.recent_move = (self.selected_tile, tile)
+								self.move_type = (figure.symbol, ' x ')
 								current_player.points += self.figure_map[tile[0]][tile[1]].value
 
 								figure.move(tile[0], tile[1])
@@ -184,6 +192,7 @@ class Board(object):
 
 						if tile in paths:
 							self.recent_move = (self.selected_tile, tile)
+							self.move_type = (figure.symbol, ' - ')
 							figure.move(tile[0], tile[1])
 
 							self.figure_map[self.selected_tile[0]][self.selected_tile[1]] = None
@@ -212,3 +221,12 @@ class Board(object):
 			return True
 
 		return False
+
+	def convert_board_coordinates(self, coordinates):
+
+		lines = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
+
+		row = 8 - coordinates[0]
+		line = lines[coordinates[1]]
+
+		return line + str(row)
