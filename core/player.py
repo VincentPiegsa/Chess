@@ -1,5 +1,5 @@
 import pygame
-from tools import render_text, load_image
+from core.tools import render_text, load_image
 
 
 class Player(object):

@@ -1,5 +1,5 @@
 import pygame
-from tools import load_image, render_text
+from core.tools import load_image, render_text
 
 
 class Figure(object):
@@ -16,6 +16,7 @@ class Figure(object):
         self.width, self.height = self.image.get_rect().size
         self.has_moved = False
         self.value = 0
+        self.symbol = ''
 
     def __repr__(self):
 
@@ -71,22 +72,22 @@ class Pawn(Figure):
         if self.has_moved:
 
             if self.color == 'white':
-                potential_paths = [(self.row + 1, self.column)]
-                potential_attack_paths = [(self.row + 1, self.column - 1), (self.row + 1, self.column + 1)]
-
-            elif self.color == "black":
                 potential_paths = [(self.row - 1, self.column)]
                 potential_attack_paths = [(self.row - 1, self.column - 1), (self.row - 1, self.column + 1)]
+
+            elif self.color == "black":
+                potential_paths = [(self.row + 1, self.column)]
+                potential_attack_paths = [(self.row + 1, self.column - 1), (self.row + 1, self.column + 1)]
 
         else:
             
             if self.color == 'white':
-                potential_paths = [(self.row + 1, self.column), (self.row + 2, self.column)]
-                potential_attack_paths = [(self.row + 1, self.column - 1), (self.row + 1, self.column + 1)]
-
-            elif self.color == "black":
                 potential_paths = [(self.row - 1, self.column), (self.row - 2, self.column)]
                 potential_attack_paths = [(self.row - 1, self.column - 1), (self.row - 1, self.column + 1)]
+
+            elif self.color == "black":
+                potential_paths = [(self.row + 1, self.column), (self.row + 2, self.column)]
+                potential_attack_paths = [(self.row + 1, self.column - 1), (self.row + 1, self.column + 1)]
 
         for potential_path in potential_paths:
             
@@ -175,6 +176,7 @@ class Rook(Figure):
 
         super().__init__(row, column, color, 'rook')
         self.value = 5
+        self.symbol = 'T'
 
     def paths(self, n_tiles, figure_map):
 
@@ -240,6 +242,7 @@ class Knight(Figure):
 
         super().__init__(row, column, color, 'knight')
         self.value = 3
+        self.symbol = 'S'
 
     def paths(self, n_tiles, figure_map):
 
@@ -274,6 +277,7 @@ class Bishop(Figure):
 
         super().__init__(row, column, color, 'bishop')
         self.value = 3
+        self.symbol = 'L'
 
     def paths(self, n_tiles, figure_map):
 
@@ -337,6 +341,7 @@ class Queen(Figure):
 
         super().__init__(row, column, color, 'queen')
         self.value = 9
+        self.symbol = 'D'
 
     def paths(self, n_tiles, figure_map):
 
@@ -409,6 +414,7 @@ class King(Figure):
 
         super().__init__(row, column, color, 'king')
         self.value = 100
+        self.symbol = 'K'
 
     def paths(self, n_tiles, figure_map):
 

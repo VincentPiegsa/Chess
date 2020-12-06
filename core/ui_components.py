@@ -1,7 +1,7 @@
 import pygame
 import pygame.gfxdraw
 
-from tools import load_image, render_text
+from core.tools import load_image, render_text
 
 
 class Button(object):
